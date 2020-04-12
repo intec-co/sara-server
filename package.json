@@ -1,0 +1,23 @@
+{
+  "name": "sara-skel-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intec-co/sara-skel-server.git"
+  },
+  "author": "cavargasp@intec.co",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/intec-co/sara-skel-server/issues"
+  },
+  "homepage": "https://github.com/intec-co/sara-skel-server#readme",
+  "devDependencies": {
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3"
+  }
+}
