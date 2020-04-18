@@ -24,7 +24,7 @@ export class MasterSara {
 		this.security = new SecurityLayer();
 		this.logger = new LoggerLayer();
 		this.control = new ControlLayer();
-		// this.bus = new BusLayer();
+		this.bus = new BusLayer();
 		this.server = http.createServer(this.listener);
 	}
 
@@ -32,7 +32,7 @@ export class MasterSara {
 		try {
 			this.conf = await loadConf(confPath);
 			this.control.setServices(this.conf.services);
-			//this.bus.initServices(this.conf);
+			this.bus.initServices(this.conf);
 			this.server.listen(this.conf.port, () => {
 				console.log(`Master run in port: ${this.conf.port}`);
 				console.log(new Date().toUTCString());
@@ -74,12 +74,8 @@ export class MasterSara {
 				return;
 			}
 
-			console.log(req);
-			console.log(security);
-			responder.responder({ msg: 'control' });
-
 			// Bus Layer
-			// await this.bus.process(req, control, responder);
+			await this.bus.process(req, control, responder);
 
 		} catch (error) {
 			console.log(error);

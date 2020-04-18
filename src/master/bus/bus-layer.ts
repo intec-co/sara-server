@@ -35,8 +35,12 @@ export class BusLayer {
 					if (!service) {
 						throw { error: `service ${rspService.service} does not exist` };
 					}
+					console.log('rspService 1');
 					rspService = await service.send(rspService);
+					console.log('rspService 2');
+					console.log(rspService);
 				} while (rspService.service);
+				console.log('exit bus');
 				if (response) {
 					response.responder(rspService.response);
 				}
