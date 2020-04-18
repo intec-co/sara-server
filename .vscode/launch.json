@@ -1,0 +1,25 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Sara Server",
+			"program": "${relativeFileDirname}/src/server.ts",
+			"args": [
+				"dist/conf/"
+			],
+			"preLaunchTask": "npm: build",
+			"outFiles": [
+				"${relativeFileDirname}/dist/**/*.js"
+			],
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"autoAttachChildProcesses": true,
+		}
+	]
+}

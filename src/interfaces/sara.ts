@@ -1,13 +1,11 @@
 import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
 
-import { Client } from './client';
+import { Conf } from './conf';
 import { ServerConf } from './server-conf';
 
 export class RequestSara {
 	authorization: string;
 	body: RequestBody;
-	client: Client;
-	host: string;
 	ip: string;
 	method: string;
 	permissions?: any;

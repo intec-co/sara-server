@@ -1,1 +1,11 @@
-{}
+{
+	"host": "localhost",
+	"files": "/home/cavargasp/files/",
+	"port": 10000,
+	"services": [
+		{
+			"protocol": "worker",
+			"name": "auth"
+		}
+	]
+}

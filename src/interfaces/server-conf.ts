@@ -1,54 +1,19 @@
-import {
-	ArrayNotEmpty, IsArray, IsInt, IsOptional, IsString, ValidateNested
-} from 'class-validator';
+import { IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class ServerConf {
-	@IsArray({
-		message: 'Falta propiedad: clients'
-	})
-	@ArrayNotEmpty({
-		message: 'Falta propiedad: clients'
-	})
-	@ValidateNested({ each: true, message: '' })
-	clients: Array<string>;
 
-	@IsString({
-		message: 'Falta propiedad: files'
-	})
+	@IsString()
 	files: string;
 
-	@IsString({
-		message: 'Falta propiedad: host'
-	})
+	@IsString()
 	host: string;
 
-	@IsString({
-		message: 'Falta propiedad:'
-	})
-	keysFile: string;
-
-	@IsOptional()
-	@ValidateNested({ each: true, message: '' })
-	mail: MailConf;
-
-	@IsString({
-		message: 'Falta propiedad:'
-	})
-	pathClientConf: string;
-
-	@IsInt({
-		message: 'Falta propiedad: port'
-	})
+	@IsInt()
 	port: number;
 
 	@IsOptional()
 	@ValidateNested({ each: true, message: '' })
 	services: Array<ServiceConf>;
-
-}
-
-export interface MailConf {
-	server: ServiceConf;
 }
 
 export class ServiceConf {

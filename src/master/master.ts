@@ -1,13 +1,11 @@
 import {
-	Client, ControlData, Keys, RequestSara, SecurityData, ServerConf
+	ControlData, RequestSara, SecurityData, Conf
 } from '@Interfaces';
-import { jsonFile } from '@Lib/utils/json-file';
 import { SecurityLayer } from './security';
-import { transformAndValidate } from 'class-transformer-validator';
 import http, { IncomingMessage, Server, ServerResponse } from 'http';
 
 import { BusLayer } from './bus';
-import { ClientLoader } from './clients';
+import { loadConf } from './lib/load-conf';
 import { ControlLayer } from './control';
 import { Responder } from './lib/responder';
 import { responses } from './lib/responses';
@@ -16,45 +14,27 @@ import { LoggerLayer } from './logger';
 export class MasterSara {
 	// Layers
 	private readonly bus: BusLayer;
-	private readonly clients: Map<string, Client>;
-	private readonly confPath: string;
 	private readonly control: ControlLayer;
-	private key: string;
 	private readonly logger: LoggerLayer;
 	private readonly security: SecurityLayer;
 	private readonly server: Server;
-	private serverConf: ServerConf;
+	private conf: Conf;
 
-	constructor(confPath: string) {
-		this.confPath = confPath;
+	constructor() {
 		this.security = new SecurityLayer();
-		this.control = new ControlLayer();
 		this.logger = new LoggerLayer();
-		this.bus = new BusLayer();
-		this.clients = new Map();
+		this.control = new ControlLayer();
+		// this.bus = new BusLayer();
 		this.server = http.createServer(this.listener);
 	}
 
-	async init(): Promise<void> {
+	async init(confPath): Promise<void> {
 		try {
-			// Load Files
-			const confStr = jsonFile.readTxt(this.confPath);
-			this.serverConf = await transformAndValidate(ServerConf, confStr) as ServerConf;
-			this.keys = jsonFile.read(this.serverConf.keysFile);
-			this.control.setServices(this.serverConf.services);
-			this.bus.initServices(this.serverConf);
-			const clientLoader = new ClientLoader(this.serverConf.pathClientConf, this.serverConf.files);
-			this.serverConf.clients.forEach(async clientName => {
-				try {
-					const client = await clientLoader.load(clientName, this.keys.clients[clientName]);
-					this.clients.set(client.host, client);
-				} catch (error) {
-					console.error(`Error: client ${clientName} no loaded`);
-					console.error(error);
-				}
-			});
-			this.server.listen(this.serverConf.port, () => {
-				console.log(`Master run in port: ${this.serverConf.port}`);
+			this.conf = await loadConf(confPath);
+			this.control.setServices(this.conf.services);
+			//this.bus.initServices(this.conf);
+			this.server.listen(this.conf.port, () => {
+				console.log(`Master run in port: ${this.conf.port}`);
 				console.log(new Date().toUTCString());
 			});
 		} catch (error) {
@@ -76,7 +56,7 @@ export class MasterSara {
 			}
 
 			// Security Layer
-			const security: SecurityData = this.security.check(req);
+			const security: SecurityData = this.security.check(this.conf.key, req);
 			if (security.isInvalid) {
 				responses.unauthorized(responder, req);
 
@@ -87,15 +67,19 @@ export class MasterSara {
 			this.logger.process(req);
 
 			// Control Layer
-			const control: ControlData = this.control.process(req, security);
+			const control: ControlData = this.control.process(this.conf.routes, req, security);
 			if (control.isInvalid) {
 				responses.forbidden(responder);
 
 				return;
 			}
 
+			console.log(req);
+			console.log(security);
+			responder.responder({ msg: 'control' });
+
 			// Bus Layer
-			await this.bus.process(req, control, responder);
+			// await this.bus.process(req, control, responder);
 
 		} catch (error) {
 			console.log(error);
@@ -105,13 +89,6 @@ export class MasterSara {
 
 	private async master(request: IncomingMessage): Promise<RequestSara> {
 		return new Promise(async (resolve, reject) => {
-			const host = request.headers.host;
-			const client: Client = this.clients.get(host);
-			if (!client) {
-				reject({ error: 'Client not found' });
-
-				return;
-			}
 			const headers = request.headers;
 			const authorization = (headers.authorization ? headers.authorization : headers.Authorization) as string;
 			let ip: string;
@@ -123,9 +100,7 @@ export class MasterSara {
 				method: request.method,
 				body: undefined,
 				authorization,
-				ip,
-				host,
-				client
+				ip
 			};
 
 			// Get Body on Post Request
