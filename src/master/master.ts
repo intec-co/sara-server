@@ -1,8 +1,8 @@
 import {
 	Client, ControlData, Keys, RequestSara, SecurityData, ServerConf
-} from '$Interfaces';
-import { jsonFile } from '$Lib/utils/json-file';
-import { SecurityLayer } from '$Services/master/security';
+} from '@Interfaces';
+import { jsonFile } from '@Lib/utils/json-file';
+import { SecurityLayer } from './security';
 import { transformAndValidate } from 'class-transformer-validator';
 import http, { IncomingMessage, Server, ServerResponse } from 'http';
 
@@ -19,7 +19,7 @@ export class MasterSara {
 	private readonly clients: Map<string, Client>;
 	private readonly confPath: string;
 	private readonly control: ControlLayer;
-	private keys: Keys;
+	private key: string;
 	private readonly logger: LoggerLayer;
 	private readonly security: SecurityLayer;
 	private readonly server: Server;
