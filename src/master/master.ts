@@ -76,7 +76,7 @@ export class MasterSara {
 			await this.bus.process(req, control, responder);
 
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			responses.badRequest(responder, error.error);
 		}
 	};
@@ -108,12 +108,10 @@ export class MasterSara {
 							const str = Buffer.concat(data)
 								.toString();
 							req.body = JSON.parse(str);
-							// TODO validate data
 
 							resolve(req);
 						} catch (error) {
-							// TODO
-							reject();
+							reject({ error: 'Error: incorrect body format' });
 						}
 					});
 			} else {

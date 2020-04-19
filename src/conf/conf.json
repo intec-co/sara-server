@@ -6,6 +6,18 @@
 		{
 			"protocol": "worker",
 			"name": "auth"
+		},
+		{
+			"protocol": "worker",
+			"name": "monguments",
+			"allowServices": [
+				"auth"
+			],
+			"conf": {
+				"host": "localhost",
+				"user": "",
+				"password": ""
+			}
 		}
 	]
 }

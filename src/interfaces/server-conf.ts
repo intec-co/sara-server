@@ -37,8 +37,3 @@ export class ServiceConf {
 	@IsString()
 	protocol: string;
 }
-
-export class ServiceData {
-	server: ServerConf;
-	service: ServiceConf;
-}

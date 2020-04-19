@@ -1,7 +1,4 @@
-import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
-
-import { Conf } from './conf';
-import { ServerConf } from './server-conf';
+import { IsArray, IsInt, IsString } from 'class-validator';
 
 export class RequestSara {
 	authorization: string;

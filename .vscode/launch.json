@@ -8,13 +8,13 @@
 			"type": "node",
 			"request": "launch",
 			"name": "Sara Server",
-			"program": "${relativeFileDirname}/src/server.ts",
+			"program": "${workspaceFolder}/src/server.ts",
 			"args": [
 				"dist/conf/"
 			],
 			"preLaunchTask": "npm: build",
 			"outFiles": [
-				"${relativeFileDirname}/dist/**/*.js"
+				"${workspaceFolder}/dist/**/*.js"
 			],
 			"skipFiles": [
 				"<node_internals>/**"

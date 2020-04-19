@@ -4,6 +4,10 @@
 		"auth": [
 			"public",
 			"auth"
+		],
+		"monguments": [
+			"public",
+			"monguments"
 		]
 	}
 }

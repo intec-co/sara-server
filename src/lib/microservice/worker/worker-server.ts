@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { MessagePort, parentPort, workerData } from 'worker_threads';
 
-import { ServiceData } from '@Interfaces';
+import { ServiceConf } from '@Interfaces';
 import { ModuleService, WorkerMessage, MicroserviceConnection } from '../interface';
 import { Microservice } from '../microservice';
 
@@ -12,9 +12,9 @@ class WorkerServer {
 	private readonly service: Microservice;
 
 	constructor() {
-		const conf: ServiceData = workerData;
-		console.log(`Init service ${conf.service.name}`);
-		const module: ModuleService = require(`@Services/${conf.service.name}`);
+		const conf: ServiceConf = workerData;
+		console.log(`Init service ${conf.name}`);
+		const module: ModuleService = require(`@Services/${conf.name}`);
 		this.service = module.init(conf);
 
 		parentPort.on('message', (data: WorkerMessage) => {

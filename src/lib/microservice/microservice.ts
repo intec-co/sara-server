@@ -1,21 +1,19 @@
-import { MessageService } from '@Interfaces';
+import { MessageService, ServiceConf } from '@Interfaces';
 import { PromiseCallback } from './interface';
 
 export abstract class Microservice {
+	protected readonly allowServices: Set<string>;
+	protected readonly name: string;
 
-	// TODO
-	// private readonly allowServices: Set<string>;
-	// private readonly extends: Map<string, Microservice>;
-	// private readonly name: string;
-
-	// abstract fromService(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback): void;
-	// abstract fromWeb(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback): void;
-
-	// internalBus(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback): void {
-	// 	do {
-
-	// 	} while (true);
-	// }
+	constructor(conf: ServiceConf) {
+		this.name = conf.name;
+		this.allowServices = new Set();
+		if (conf.allowServices) {
+			conf.allowServices.forEach(service =>
+				this.allowServices.add(service)
+			);
+		}
+	}
 
 	async process(message: MessageService): Promise<MessageService> {
 		return new Promise(async (resolve, reject) => {
@@ -35,5 +33,13 @@ export abstract class Microservice {
 				reject({ error });
 			}
 		});
+	}
+
+	protected fromService(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback): void {
+		reject({ error: 'Error - service not available' });
+	}
+
+	protected fromWeb(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback): void {
+		reject({ error: 'Error - service not available' });
 	}
 }

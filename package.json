@@ -4,13 +4,14 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "npm run build:live",
+		"build": "tsc",
+		"start": "npm run copy:files; npm run watch",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"watch-node": "nodemon dist/server.js dist/conf/",
 		"watch-ts": "tsc -w",
 		"watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
-		"build:live": "npm run copy:files; nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts dist/conf/",
-		"copy:files": "cp package.json dist/; cp src/conf/key dist/conf;cd src;find ./ -name '*.json' -type f -exec cp --parents {} ../dist/ \\;"
+		"watch:copy": "npm run copy:files",
+		"copy:files": "cp -uvr package.json dist/; cp -uvr src/conf/key dist/conf;cd src;find ./ -name '*.json' -type f -exec cp --parents {} ../dist/ \\;"
 	},
 	"repository": {
 		"type": "git",
