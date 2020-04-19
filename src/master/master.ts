@@ -38,7 +38,7 @@ export class MasterSara {
 				console.log(new Date().toUTCString());
 			});
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 
@@ -46,9 +46,7 @@ export class MasterSara {
 		const responder = new Responder(response);
 		try {
 			// Master Layer
-			console.log('request');
 			const req = await this.master(request);
-			console.log(req);
 			if (!req) {
 				responses.badRequest(responder);
 
@@ -101,8 +99,6 @@ export class MasterSara {
 
 			// Get Body on Post Request
 			if (request.method === 'POST') {
-				console.log('post');
-
 				const data = [];
 				request.on('data', chunk => {
 					data.push(chunk);
@@ -112,12 +108,11 @@ export class MasterSara {
 							const str = Buffer.concat(data)
 								.toString();
 							req.body = JSON.parse(str);
-							// ToDo validate data
-							console.log('resolve');
+							// TODO validate data
 
 							resolve(req);
 						} catch (error) {
-							// ToDo
+							// TODO
 							reject();
 						}
 					});
