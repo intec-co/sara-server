@@ -61,11 +61,10 @@ class MongumentsService extends Microservice {
 				this.auth.process(message, resolve, reject);
 				break;
 			default:
-				//TODO habilitar permisos
 				this.monguments.process(
 					message.request.body.route,
 					message.request.body,
-					'RW_',
+					message.request.permissions,
 					result => {
 						message.response = result;
 						resolve(message);

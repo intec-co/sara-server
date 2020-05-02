@@ -18,7 +18,7 @@ export class SecurityLayer {
 				isInvalid: true
 			};
 			if (req.authorization) {
-				req.permissions = this.decrypt(req.authorization, key);
+				result.allPermissions = this.decrypt(req.authorization, key);
 				result.authenticated = true;
 				result.isInvalid = false;
 			} else {

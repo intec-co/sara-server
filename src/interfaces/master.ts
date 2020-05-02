@@ -6,6 +6,7 @@ export class ControlData {
 export interface SecurityData {
 	authenticated: boolean;
 	isInvalid: boolean;
+	allPermissions?: any;
 }
 
 export interface Keys {

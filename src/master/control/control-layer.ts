@@ -16,15 +16,19 @@ export class ControlLayer {
 						security.authenticated &&
 						req.permissions.routes[req.body.route]
 					) {
-						const permissions: string = req.permissions.routes[req.body.route];
+						const permissions: string = security.allPermissions[req.body.route];
 						const read = permissions.charAt(0);
 						const write = permissions.charAt(1);
+						req.permissions = permissions;
 						if (
 							(req.body.operation === 'read' || req.body.operation === 'readList') &&
 							(read === 'R' || read === 'r')
 						) {
 							result.isInvalid = false;
-						} else if (req.body.operation === 'write' && write !== '_') {
+						} else if (
+							req.body.operation === 'write' &&
+							(write === 'W' || write === 'w')
+						) {
 							result.isInvalid = false;
 						}
 					}
