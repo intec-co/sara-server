@@ -17,7 +17,11 @@ export class Responder extends Writable {
 		callback();
 	}
 	responder(data: any): void {
-		const str = JSON.stringify(data);
+		const payload = {
+			isValid: true,
+			data
+		};
+		const str = JSON.stringify(payload);
 		const headersResponse = { 'Content-Type': 'text/json' };
 		this.response.writeHead(200, headersResponse);
 		this.response.write(str);

@@ -4,6 +4,16 @@ import { Responder } from './responder';
 class Responses {
 	private readonly foot: string = '</body></html>';
 	private readonly head: string = '<html><head><meta charset="UTF-8"></head><body>';
+	serverError(response: Responder): void {
+		const headersResponse = [
+			['Content-Type', 'text/html']
+		];
+		const msg = '<h2>Error interno del servidor</h2>';
+		const html = this.head.concat(`<h1>Error 500</h1>${msg}`, this.foot);
+		response.writeHead(500, headersResponse);
+		response.write(html);
+		response.end();
+	}
 	badRequest(response: Responder, message?: string): void {
 		const headersResponse = [
 			['Content-Type', 'text/html']

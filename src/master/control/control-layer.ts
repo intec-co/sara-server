@@ -1,24 +1,42 @@
-import { ControlData, RequestSara, SecurityData, ServiceConf } from '@Interfaces';
+import { ControlData, RequestSara, SecurityData, ServiceConf, RoutesConf } from '@Interfaces';
 
 export class ControlLayer {
 	private services: Set<string>;
-	// TODO falta definir el tipo routes
-	process(routes, req: RequestSara, security: SecurityData): ControlData {
-		// TODO validar qeu el method este soportado
-		// TODO validar que la ruta exista
-		const routeParams = routes[req.method][req.body.route];
+	process(routes: RoutesConf, req: RequestSara, security: SecurityData): ControlData {
+		if (req.method === 'POST') {
+			if (req.body.route && routes[req.method][req.body.route]) {
+				const routeParams: [string, string] = routes[req.method][req.body.route];
+				const result: ControlData = { isInvalid: true };
+				result.service = routeParams[1];
+				if (this.services.has(routeParams[1])) {
+					if (routeParams[0] === 'public') {
+						result.isInvalid = false;
+					} else if (
+						routeParams[0] === 'auth' &&
+						security.authenticated &&
+						req.permissions.routes[req.body.route]
+					) {
+						const permissions: string = req.permissions.routes[req.body.route];
+						const read = permissions.charAt(0);
+						const write = permissions.charAt(1);
+						if (
+							(req.body.operation === 'read' || req.body.operation === 'readList') &&
+							(read === 'R' || read === 'r')
+						) {
+							result.isInvalid = false;
+						} else if (req.body.operation === 'write' && write !== '_') {
+							result.isInvalid = false;
+						}
+					}
+				}
 
-		const result: ControlData = { isInvalid: true };
+				return result;
+			}
+		} else if (req.method === 'GET') {
 
-		if (this.services.has(routeParams[1]) && (
-			(security.authenticated && routeParams[0] === 'auth') ||
-			(!security.authenticated && routeParams[0] === 'public')
-		)) {
-			result.isInvalid = false;
-			result.service = routeParams[1];
 		}
 
-		return result;
+		return { isInvalid: true };
 	}
 
 	setServices(list: Array<ServiceConf>): void {

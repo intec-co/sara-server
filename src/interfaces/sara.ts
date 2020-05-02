@@ -49,3 +49,8 @@ export interface MessageService {
 	service: string;
 	serviceRequest?: any;
 }
+
+export interface RoutesConf {
+	GET: { [key: string]: ['access', 'microservice'] };
+	POST: { [key: string]: ['access', 'microservice'] };
+}

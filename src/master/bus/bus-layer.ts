@@ -9,12 +9,15 @@ import { Responder } from '../lib/responder';
 export class BusLayer {
 	private services: Map<string, WorkerClient>;
 
-	initServices(conf: Conf): void {
+	initServices(conf: Conf, confPath: string): void {
 		this.services = new Map();
 		conf.services.forEach((service: ServiceConf) => {
+			if (!service.confPath) {
+				service.confPath = confPath;
+			}
 			switch (service.protocol) {
 				case 'worker':
-					this.services.set(service.name, new WorkerClient(conf, service));
+					this.services.set(service.name, new WorkerClient(service));
 					break;
 				default:
 					console.error(`Error: Protocolo ${service.protocol} para ${service.name} es desconocido.`);

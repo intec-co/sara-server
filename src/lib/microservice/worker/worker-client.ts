@@ -1,5 +1,5 @@
 
-import { MessageService, ServerConf, ServiceConf } from '@Interfaces';
+import { MessageService, ServiceConf } from '@Interfaces';
 import path from 'path';
 import { MessageChannel, Worker } from 'worker_threads';
 
@@ -8,7 +8,7 @@ import { MicroserviceConnection } from '../interface';
 export class WorkerClient implements MicroserviceConnection {
 	private readonly worker: Worker;
 
-	constructor(server: ServerConf, service: ServiceConf) {
+	constructor(service: ServiceConf) {
 		const pathFile = path.join(__dirname, 'worker-server.js');
 		this.worker = new Worker(pathFile, { workerData: service });
 		this.worker.on('exit', error => {

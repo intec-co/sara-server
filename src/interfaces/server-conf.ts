@@ -36,4 +36,8 @@ export class ServiceConf {
 
 	@IsString()
 	protocol: string;
+
+	@IsString()
+	@IsOptional()
+	confPath: string;
 }

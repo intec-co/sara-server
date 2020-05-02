@@ -17,7 +17,7 @@ export async function loadConf(confPath): Promise<Conf> {
 			const key = fs.readFileSync(filePath).toString();
 
 			// Load routes
-			// TODO validar la estructura de las rutas
+			// TODO validar la estructura de las rutas minimo GET y POST
 			// {
 			// 	"GET": { },
 			// 	"POST": {

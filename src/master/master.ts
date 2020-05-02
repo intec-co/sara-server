@@ -32,7 +32,7 @@ export class MasterSara {
 		try {
 			this.conf = await loadConf(confPath);
 			this.control.setServices(this.conf.services);
-			this.bus.initServices(this.conf);
+			this.bus.initServices(this.conf, confPath);
 			this.server.listen(this.conf.port, () => {
 				console.log(`Master run in port: ${this.conf.port}`);
 				console.log(new Date().toUTCString());
@@ -45,8 +45,13 @@ export class MasterSara {
 	private readonly listener = async (request: IncomingMessage, response: ServerResponse) => {
 		const responder = new Responder(response);
 		try {
-			// Master Layer
-			const req = await this.master(request);
+			if (!this.conf.routes) {
+				responses.serverError(responder);
+
+				return;
+			}
+			// Communication Layer
+			const req = await this.getRequest(request);
 			if (!req) {
 				responses.badRequest(responder);
 
@@ -71,17 +76,21 @@ export class MasterSara {
 
 				return;
 			}
-
-			// Bus Layer
-			await this.bus.process(req, control, responder);
-
+			if (req.method === 'GET') {
+				// Response to nginx auth
+				responder.writeHead(200);
+				responder.end();
+			} else if (req.method === 'POST') {
+				// Bus Layer
+				await this.bus.process(req, control, responder);
+			}
 		} catch (error) {
 			console.error(error);
 			responses.badRequest(responder, error.error);
 		}
 	};
 
-	private async master(request: IncomingMessage): Promise<RequestSara> {
+	private async getRequest(request: IncomingMessage): Promise<RequestSara> {
 		return new Promise(async (resolve, reject) => {
 			const headers = request.headers;
 			const authorization = (headers.authorization ? headers.authorization : headers.Authorization) as string;
