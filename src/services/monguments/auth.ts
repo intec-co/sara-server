@@ -1,5 +1,5 @@
 import { Db, Collection } from 'mongodb';
-import { MessageService, AuthRequest } from '@Interfaces';
+import { MessageService } from '@Interfaces';
 import crypto, { CipherGCMTypes } from 'crypto';
 import { PromiseCallback } from '@Lib/microservice';
 import { ProcessPermissions } from '@Lib/process-permissions';
@@ -33,7 +33,7 @@ export class Auth {
 		this.processPermissions = new ProcessPermissions();
 	}
 	async process(message: MessageService, resolve: PromiseCallback, reject: PromiseCallback) {
-		const req: AuthRequest = message.request.body.data;
+		const req = message.request.body.data;
 		message.response = { isValid: false };
 		const person = await this.personColl.findOne({ docId: req.user });
 		if (person) {
@@ -52,12 +52,10 @@ export class Auth {
 		}
 		resolve(message);
 	}
-	processRoutes(list: Array<any>): any {
-		const routesAccess: any = {};
+	processRoutes(roles: Array<any>): any {
+		let routesAccess: any = {};
 		if (this.roles) {
-			list.forEach(enterprise => {
-				routesAccess[enterprise.name] = this.processPermissions.getPermissions(this.roles, enterprise.roles);
-			});
+			routesAccess = this.processPermissions.getPermissions(this.roles, roles);
 		}
 
 		return routesAccess;
