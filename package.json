@@ -35,7 +35,7 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
-		"class-transformer": "^0.2.3",
+		"class-transformer": "^0.3.1",
 		"class-transformer-validator": "^0.8.0",
 		"class-validator": "^0.12.1",
 		"module-alias": "^2.2.2",
